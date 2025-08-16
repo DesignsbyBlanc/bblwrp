@@ -1,3 +1,30 @@
+# Bblwrp
+
+**Bblwrp**, pronounced *bubble wrap*, is a fork of the Sandboxie Plus OSS project that aims to provide bindings and tooling for IT administrators.
+
+### Use cases include:
+
+- **Support for legacy environments**: Enables MSPs to offer software support SLAs for existing client environments—especially useful for clients who cannot supply baselines or start from a clean slate.
+- **Software debugging**: Aids troubleshooting by providing a reference point for how software behaves in a sandboxed environment versus natively on the host system, where issues are occurring.
+- **Lightweight on-prem CI/CD**: Delivers an easy-to-implement CI/CD pipeline for Windows software development.
+
+### Planned features:
+
+- [ ] Create gRPC interface
+- [ ] Develop a Python library (for integration with existing Python-based CI/CD tools such as Ansible)
+- [ ] Develop a .NET library (for integration with existing .NET-based CI/CD tools such as PowerShell workflows)
+- [ ] Add Active Directory integration
+- [ ] Add Entra ID integration
+- [ ] Build a multi-instance software management dashboard
+
+
+---
+
+#### Original project ReadME starts here:
+
+The below information is from the original project at the time the project was forked.
+
+---
 # Sandboxie Plus / Classic
 
 <p align='center'>
