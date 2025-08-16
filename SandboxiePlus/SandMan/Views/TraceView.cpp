@@ -288,7 +288,7 @@ CTraceView::CTraceView(bool bStandAlone, QWidget* parent) : QWidget(parent)
 	m_pTraceType->setNoneCheckedText(tr("[All]"));
 	foreach(quint32 type, CTraceEntry::AllTypes()) 
 		m_pTraceType->addCheckItem(CTraceEntry::GetTypeStr(type), type, Qt::Unchecked);
-	m_pTraceType->setMinimumWidth(100);
+	m_pTraceType->adjustWidthForItems();
 	connect(m_pTraceType, SIGNAL(globalCheckStateChanged(int)), this, SLOT(OnSetFilter()));
 	m_pTraceToolBar->addWidget(m_pTraceType);
 
@@ -468,9 +468,11 @@ void CTraceView::Refresh()
 
 		if (bMonitorMode)
 		{
-			CMonitorEntryPtr& pItem = m_MonitorMap[pEntry->GetName().toLower()];
+			QString Name = pEntry->GetName();
+			if (Name.isEmpty())
+				Name = pEntry->GetMessage();
+			CMonitorEntryPtr& pItem = m_MonitorMap[Name.toLower()];
 			if (pItem.data() == NULL) {
-				QString Name = pEntry->GetName();
 				//if (Name.left(9).compare("\\REGISTRY", Qt::CaseInsensitive) == 0) {
 				//	int pos = Name.indexOf("\\", 10);
 				//	Name = Name.left(pos).toUpper() + Name.mid(pos);

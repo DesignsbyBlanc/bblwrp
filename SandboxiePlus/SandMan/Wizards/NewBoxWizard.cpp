@@ -701,7 +701,16 @@ bool CFilesPage::validatePage()
     if (Location == m_pBoxLocation->itemText(0))
         wizard()->setField("boxLocation", "");
     else {
-        if (Location.mid(2).contains(QRegularExpression("[ <>:\"/\\|?*\\[\\]]"))){
+        int offset = Location.left(4) == "\\??\\" ? 4 : 0;
+        if (Location.length() < offset + 4) {
+            QMessageBox::critical(this, "Sandboxie-Plus", tr("A sandbox cannot be located at the root of a partition, please select a folder."));
+            return false;
+        }
+        if (Location.left(2) == "\\\\") {
+            QMessageBox::critical(this, "Sandboxie-Plus", tr("A sandbox cannot be located on a network share, please select a local folder."));
+            return false;
+        }
+        if (Location.mid(offset + 2).contains(QRegularExpression("[ <>:\"/\\|?*\\[\\]]"))){
             QMessageBox::critical(this, "Sandboxie-Plus", tr("The selected box location is not a valid path."));
             return false;
         }
@@ -711,7 +720,7 @@ bool CFilesPage::validatePage()
                 "Are you sure you want to use an existing folder?"), QDialogButtonBox::Yes, QDialogButtonBox::No) != QDialogButtonBox::Yes)
                 return false;
         }
-        if (!QDir().exists(Location.left(3))) {
+        if (Location.mid(offset, 13).compare("%SystemDrive%") != 0 && !QDir().exists(Location.mid(offset, 3))) {
             QMessageBox::critical(this, "Sandboxie-Plus", tr("The selected box location is not placed on a currently available drive."));
             return false;
         }
@@ -1065,7 +1074,7 @@ void CSummaryPage::initializePage()
     if (field("autoRemove").toBool()) 
         m_pSummary->append(tr("\nThis box's content will be DISCARDED when it's closed, and the box will be removed."));
     else if (field("autoDelete").toBool())
-        m_pSummary->append(tr("\nThis box will DISCARD its content when its closed, its suitable only for temporary data."));
+        m_pSummary->append(tr("\nThis box will DISCARD its content when it's closed, it's suitable only for temporary data."));
     if (field("blockNetwork").toInt())
         m_pSummary->append(tr("\nProcesses in this box will not be able to access the internet or the local network, this ensures all accessed data to stay confidential."));
     if (field("msiServer").toBool())
