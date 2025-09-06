@@ -17,6 +17,7 @@
 - [ ] Add Entra ID integration
 - [ ] Build a multi-instance software management dashboard
 
+Looking to get familiar with the technologies that will be used in this fork? I'm working on some separate supplementary material [here](https://github.com/DesignsbyBlanc/ETL_pipeline_sampler).
 
 ---
 
