@@ -1,22 +1,210 @@
 # Bblwrp
 
-**Bblwrp**, pronounced *bubble wrap*, is a fork of the Sandboxie Plus OSS project that aims to provide bindings and tooling for IT administrators.
+## BBLWRP Technical Roadmap: The 10-Year Vision
 
-### Use cases include:
+### Enterprise Sandboxing & Deployment Framework (2026–2036)
 
-- **Support for legacy environments**: Enables MSPs to offer software support SLAs for existing client environments—especially useful for clients who cannot supply baselines or start from a clean slate.
-- **Software debugging**: Aids troubleshooting by providing a reference point for how software behaves in a sandboxed environment versus natively on the host system, where issues are occurring.
-- **Lightweight on-prem CI/CD**: Delivers an easy-to-implement CI/CD pipeline for Windows software development.
+---
 
-### Planned features:
+<sub>This is a formal draft outlining BBLWRP’s technical trajectory. Over the next decade, BBLWRP will act as a primary driver for the **Rust-for-Windows** and **Swift-to-Wasm** ecosystems.</sub>
 
-- [ ] Create gRPC interface
-- [ ] Develop a Python library (for integration with existing Python-based CI/CD tools such as Ansible)
-- [ ] Develop a .NET library (for integration with existing .NET-based CI/CD tools such as PowerShell workflows)
-- [ ] Add Active Directory integration
-- [ ] Add Entra ID integration
-- [ ] Build a multi-instance software management dashboard
-- [ ]  Migrate codebase to [Carbon](https://docs.carbon-lang.dev/)
+---
+
+## Overview
+
+**BBLWRP** (pronounced *“bubble wrap”*) is a next-generation isolation platform. Built on a re-architected foundation derived from **Sandboxie Plus**, it replaces legacy C/C++ with a tiered, memory-safe architecture designed for high-stakes enterprise environments.
+
+* **Enforcement Layer (Rust):** High-performance kernel-mode drivers providing the "oxidized" foundation for Windows.
+* **Orchestration Layer (Swift):** High-level policy logic and fleet management.
+* **Universal Execution (Wasm):** On non-Apple platforms, Swift is compiled into **WebAssembly Components**, executing within a Rust-hosted runtime for hardware-agnostic isolation.
+
+---
+
+## Strategic Core: Construction over Retrofitting
+
+BBLWRP operates on the principle that **isolation must be enforced by construction**. We move away from reactive "patch-and-pray" security toward a formal proof of safety.
+
+* **ABI Parity:** BBLWRP is committed to contributing to `windows-rs` to ensure Rust kernel abstractions have 1:1 parity with the Microsoft C++ WDK.
+* **Full Swift Support:** Over 10 years, BBLWRP will drive the maturity of "Full Swift" (beyond the Embedded subset) on Wasm, enabling rich, concurrent policy engines that leverage the complete Swift standard library.
+* **Idempotent State:** All sandbox deployments are declarative. The engine reconciles the system state against the Swift-defined policy module, ensuring absolute consistency across enterprise fleets.
+
+---
+
+## Language Strategy: The Swift-to-Wasm Pipeline
+
+BBLWRP standardizes on a **Swift-to-Wasm** pipeline that evolves in two stages to meet both immediate performance needs and long-term scalability.
+
+### 1. Short-term (Embedded Swift): The Transitional Bridge
+
+Using the **Swift 6.2+ toolchain**, we utilize the "Embedded" subset of the language. This removes the overhead of a heavy runtime and garbage collection, allowing for:
+
+* **Minimal Binaries:** Tiny Wasm modules that load with near-zero latency.
+* **Determinism:** Predictable performance critical for kernel-level policy arbitration.
+* **Zero-Runtime Interop:** Clean communication with the Rust host via Wasm Interface Types (WIT).
+
+### 2. Long-term (Full Runtime): The Final Logic Plane
+
+Utilizing the **WASI 0.3+ Component Model**, BBLWRP will host a shared Swift runtime as a Wasm component. This enables the **full language** (Reflection, Concurrency, Foundation) with minimal per-instance overhead, allowing for highly complex, identity-aware policy engines.
+
+---
+
+## Roadmap: 10-Year Phased Evolution
+
+### Phase 0: The Oxidized Foundation (Years 1–4)
+
+**Objective:** Establish a kernel-mode enforcement layer with native C++ parity.
+
+* **Upstream Parity:** Contributions to `windows-rs` for undocumented NT-kernel APIs.
+* **Verified Drivers:** Reimplementation of Sandboxie core filtering in Rust.
+* **Native Hooks:** Leveraging Windows Kernel Callbacks (WDM/KTM) for object-level isolation.
+
+### Phase 1: The Swift Transition (Years 3–7)
+
+**Objective:** Transition the control plane to a high-concurrency Swift-Wasm engine.
+
+* **Swift-Wasm Maturity:** Contributing to `swift-wasm` to stabilize the WASI 0.3 concurrency model.
+* **Embedded-First Hot-Path:** Deploying low-latency policy engines in Embedded Swift for real-time I/O arbitration.
+* **Component Orchestrator:** Rust-hosted **Wasmtime** engine to execute multi-threaded Full Swift policies as the spec matures.
+
+### Phase 2: Global Policy Mesh (Years 6–10)
+
+**Objective:** Cross-platform federation and idempotent deployment at scale.
+
+* **Unified Semantics:** Applying the same Swift-Wasm policies across Windows (Rust-driver), macOS (`Virtualization.framework`), and Linux (eBPF).
+* **Identity-Aware Isolation:** Native integration with Entra ID and SPIFFE for zero-trust policy assignment.
+
+---
+
+## BBLWRP Enterprise SDK Architecture
+
+```mermaid
+flowchart LR
+    %% Main Phases Colors
+    classDef upstream fill:#f9f,stroke:#333,stroke-width:2px,color:#000;
+    classDef phase0 fill:#ffeb99,stroke:#333,stroke-width:2px,color:#000;
+    classDef phase1 fill:#99ccff,stroke:#333,stroke-width:2px,color:#000;
+    classDef phase2 fill:#b3ffb3,stroke:#333,stroke-width:2px,color:#000;
+
+    %% UPSTREAM
+    subgraph UPSTREAM["YEARS 1-10: UPSTREAM CONTRIBUTIONS"]
+
+    __spacer01@{ shape: text, label: "
+\n
+
+\n
+" }
+
+    __spacer02@{ shape: text, label: "
+\n
+
+\n
+" }
+
+        direction BT
+        U1["windows-rs: Kernel/WDK Parity"]:::upstream
+        U2["Swift-Wasm: Embedded & Full Toolchains"]:::upstream
+        U3["WASI 0.3+ Component Model Specs"]:::upstream
+
+        U1 === U2 === U3
+    end
+
+    %% PHASE 0
+    subgraph P0["PHASE 0: OXIDIZED ENFORCEMENT"]
+        direction BT
+            __spacer001@{ shape: text, label: "
+\n
+
+\n
+" }
+
+    __spacer002@{ shape: text, label: "
+\n
+
+\n
+" }
+        A1["Legacy Sandboxie C++ Core"]:::phase0
+        A2["Verified Rust Driver (BblwrpDrv)"]:::phase0
+        A3["Rust-Native FltMgr/WDK Bindings"]:::phase0
+
+        A1 --> A2 --> A3
+    end
+
+    %% PHASE 1
+    subgraph P1["PHASE 1: THE SWIFT TRANSITION"]
+        direction BT
+                    __spacer0001@{ shape: text, label: "
+\n
+
+\n
+" }
+
+    __spacer0002@{ shape: text, label: "
+\n
+
+\n
+" }
+        B1["Embedded Swift 6.x (Wasm Guest)"]:::phase1
+        B2["Low-Latency Policy Hot-Path"]:::phase1
+        B3["Wasmtime-Rust Orchestrator"]:::phase1
+        B4["Full Swift Runtime (WASI 0.3)"]:::phase1
+
+        B1 --> B2 --> B3 --> B4
+    end
+
+    %% PHASE 2
+    subgraph P2["PHASE 2: GLOBAL POLICY MESH"]
+        direction BT
+                    __spacer00001@{ shape: text, label: "
+\n
+
+\n
+" }
+
+    __spacer00002@{ shape: text, label: "
+\n
+
+\n
+" }
+        C1["Swift-Native Cloud Orchestration"]:::phase2
+        C2["Idempotent Fleet Reconciler"]:::phase2
+        C3["Cross-Platform Policy (macOS/Linux)"]:::phase2
+
+        C1 --> C2 --> C3
+    end
+
+    %% Main Flow
+    UPSTREAM --> P0 --> P1 --> P2
+
+```
+
+---
+
+## Rationale for the Phased Approach
+
+* **Security by Construction:** BBLWRP eliminates the "70% problem"—memory-safety vulnerabilities. By using Rust for kernel enforcement, we achieve **deterministic safety**.
+* **The "Embedded" Advantage:** Starting with Embedded Swift ensures that we don't trade security for performance. We provide the speed of C with the safety of Swift from Day 1.
+* **Idempotent Fleet Management:** Our **Declarative Engine** ensures that if a policy is defined in Swift, the Rust enforcer reconciles the system state to match it—automatically fixing "broken" sandboxes.
+* **Hardware-Level Integrity:** We align with **Apple’s Memory Integrity Enforcement (MIE)** and Windows' **Rust-in-Kernel** milestones. By 2026, silicon-level memory tagging (like ARM MTE or Intel LAM) is becoming standard; BBLWRP’s architecture is designed to offload safety checks directly to this hardware.
+
+---
+
+## Final Clarification
+
+> BBLWRP contains **no maintained C/C++ code**. Any C/C++ in the environment exists strictly within the legacy OS boundary.
+> On non-Apple platforms, Swift orchestration logic is compiled into **WebAssembly Components** and executed within a **Rust-hosted Wasmtime instance**. This ensures that even a "compromised" policy engine cannot escape its memory-isolated execution stack.
+
+---
+
+## Additional Resources
+
+- **[Rust for Windows](https://github.com/microsoft/windows-rs)** – The official Microsoft projection for calling Windows APIs natively in Rust.
+- **[Swift for WebAssembly (SwiftWasm)](https://book.swiftwasm.org/)** – Documentation for the Swift toolchain targeting the Wasm Component Model.
+- **[Wasmtime Component Model](https://www.google.com/search?q=https://docs.wasmtime.dev/component-model/intro.html)** – Guidance on building interoperable "Lego-brick" components with WIT.
+- **[Microsoft: The Case for Memory Safety](https://www.google.com/search?q=https://aka.ms/memory-safety)** – Microsoft's 2025/2026 whitepaper on the transition from C++ to Rust in the Windows Kernel.
+- **[Apple Security: Memory Integrity Enforcement](https://security.apple.com/blog/memory-integrity-enforcement/)** – Deep dive into hardware-level memory safety on Apple Silicon.
+- **[WasmKit](https://github.com/swiftwasm/WasmKit)** – A lightweight, embeddable Wasm runtime written in Swift, often used for local policy testing.
+
+
 
 Looking to get familiar with the technologies that will be used in this fork? I'm working on some separate supplementary material [here](https://github.com/DesignsbyBlanc/ETL_pipeline_sampler).
 
