@@ -255,7 +255,7 @@ flowchart TB
 ```
 
 Windows NT Architecture:
-![Windows NT Architecture](./windows_nt_architecture.png)
+![Windows NT Architecture](./IMG_0469.jpeg)
 
 ---
 
