@@ -189,17 +189,17 @@ flowchart TB
     %% =========================
     subgraph USER["User and Tooling Layer"]
         CLI["bblwrp CLI or Admin UI"]
-        DEV["Developer Tooling\nBaseline Authoring"]
+        DEV["Developer Tooling Baseline Authoring"]
     end
 
     %% =========================
     %% Windows User Mode
     %% =========================
     subgraph USERMODE["Windows User Mode"]
-        APP["Sandboxed Application\nexample.exe"]
+        APP["Sandboxed Application example.exe"]
 
-        SERVICE["BBLWRP Orchestrator Service\nRust Windows Service"]
-        WASM["Swift Policy Engine\nWebAssembly Runtime"]
+        SERVICE["BBLWRP Orchestrator Service Rust Windows Service"]
+        WASM["Swift Policy Engine WebAssembly Runtime"]
 
         NTAPI["NTDLL and Win32 APIs"]
     end
@@ -208,13 +208,13 @@ flowchart TB
     %% Windows Kernel Mode
     %% =========================
     subgraph KERNEL["Windows Kernel Mode"]
-        NTKERNEL["NT Kernel\nntoskrnl.exe"]
+        NTKERNEL["NT Kernel ntoskrnl.exe"]
 
-        CALLBACKS["NT Kernel Callbacks\nProcess Object and Registry"]
+        CALLBACKS["NT Kernel Callbacks Process Object and Registry"]
 
-        FILTERS["BBLWRP Kernel Drivers\nObject Process Registry File and Network Enforcement"]
+        FILTERS["BBLWRP Kernel Drivers Object Process Registry File and Network Enforcement"]
 
-        IOCTL["IOCTL Interface\nDeviceIoControl"]
+        IOCTL["IOCTL Interface DeviceIoControl"]
     end
 
     %% =========================
@@ -254,7 +254,8 @@ flowchart TB
     NTKERNEL --> IO
 ```
 
-
+Windows NT Architecture:
+![Windows NT Architecture](./windows_nt_architecture.png)
 
 ---
 
