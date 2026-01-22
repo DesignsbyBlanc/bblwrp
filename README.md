@@ -77,6 +77,8 @@ Utilizing the **WASI 0.3+ Component Model**, BBLWRP will host a shared Swift run
 
 ## BBLWRP Enterprise SDK Architecture
 
+placeholder diagrams
+
 ```mermaid
 flowchart LR
     %% Main Phases Colors
@@ -177,6 +179,83 @@ flowchart LR
 
 ```
 
+## BBLWRP Windows Internals Mapping
+
+```mermaid
+flowchart TB
+
+    %% =========================
+    %% User / Tooling Layer
+    %% =========================
+    subgraph USER["User and Tooling Layer"]
+        CLI["bblwrp CLI or Admin UI"]
+        DEV["Developer Tooling\nBaseline Authoring"]
+    end
+
+    %% =========================
+    %% Windows User Mode
+    %% =========================
+    subgraph USERMODE["Windows User Mode"]
+        APP["Sandboxed Application\nexample.exe"]
+
+        SERVICE["BBLWRP Orchestrator Service\nRust Windows Service"]
+        WASM["Swift Policy Engine\nWebAssembly Runtime"]
+
+        NTAPI["NTDLL and Win32 APIs"]
+    end
+
+    %% =========================
+    %% Windows Kernel Mode
+    %% =========================
+    subgraph KERNEL["Windows Kernel Mode"]
+        NTKERNEL["NT Kernel\nntoskrnl.exe"]
+
+        CALLBACKS["NT Kernel Callbacks\nProcess Object and Registry"]
+
+        FILTERS["BBLWRP Kernel Drivers\nObject Process Registry File and Network Enforcement"]
+
+        IOCTL["IOCTL Interface\nDeviceIoControl"]
+    end
+
+    %% =========================
+    %% Hardware
+    %% =========================
+    subgraph HW["Hardware"]
+        CPU["CPU"]
+        MEM["Memory and MMU"]
+        IO["Storage and Network Devices"]
+    end
+
+    %% =========================
+    %% Flows
+    %% =========================
+
+    CLI --> SERVICE
+    DEV --> SERVICE
+
+    APP --> NTAPI
+    NTAPI --> NTKERNEL
+
+    NTKERNEL --> CALLBACKS
+    CALLBACKS --> FILTERS
+
+    FILTERS --> NTKERNEL
+
+    FILTERS --> IOCTL
+    IOCTL --> SERVICE
+
+    SERVICE --> WASM
+    WASM --> SERVICE
+
+    SERVICE --> APP
+
+    NTKERNEL --> CPU
+    NTKERNEL --> MEM
+    NTKERNEL --> IO
+```
+
+
+
 ---
 
 ## Rationale for the Phased Approach
@@ -199,8 +278,7 @@ flowchart LR
 
 - **[Rust for Windows](https://github.com/microsoft/windows-rs)** – The official Microsoft projection for calling Windows APIs natively in Rust.
 - **[Swift for WebAssembly (SwiftWasm)](https://book.swiftwasm.org/)** – Documentation for the Swift toolchain targeting the Wasm Component Model.
-- **[Wasmtime Component Model](https://www.google.com/search?q=https://docs.wasmtime.dev/component-model/intro.html)** – Guidance on building interoperable "Lego-brick" components with WIT.
-- **[Microsoft: The Case for Memory Safety](https://www.google.com/search?q=https://aka.ms/memory-safety)** – Microsoft's 2025/2026 whitepaper on the transition from C++ to Rust in the Windows Kernel.
+- **[Wasmtime Component Model](https://component-model.bytecodealliance.org/design/wit.html)** – Guidance on building interoperable "Lego-brick" components with WIT.
 - **[Apple Security: Memory Integrity Enforcement](https://security.apple.com/blog/memory-integrity-enforcement/)** – Deep dive into hardware-level memory safety on Apple Silicon.
 - **[WasmKit](https://github.com/swiftwasm/WasmKit)** – A lightweight, embeddable Wasm runtime written in Swift, often used for local policy testing.
 
