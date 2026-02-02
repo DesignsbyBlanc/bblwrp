@@ -269,6 +269,13 @@ WSL:
 
 CLR:
 
+<img width="182" height="546" alt="Code like a Pro in C# - Figure 2.7 CoreCLR can JIT-compile for targets such as Linux, Windows, and macOS. This allows for cross-platform execution of C# code." src="https://github.com/user-attachments/assets/f415c975-d54e-4b8d-9654-89f5af9fd8e4" />
+
+
+
+<img width="473" height="361" alt="Code like a Pro in C# - Figure 2.3 The complete C# compilation process. It goes from C# code to Common Intermediate Language to native code. Understanding the compilation process gives us knowledge about some of the internal choices made around C# and .NET." src="https://github.com/user-attachments/assets/897f9ac2-a0dc-401a-a2c0-6da265354cd0" />
+
+
 <img width="393" height="244" alt="CLR via C#, Fourth Edition - Figure 1-1. Compiling source code into managed modules" src="https://github.com/user-attachments/assets/e04737bd-89ea-423e-adde-bc6f676ac45c" />
 
 <img width="602" height="302" alt="CLR via C#, Fourth Edition - Figure 1-2. Combining managed modules into assemblies" src="https://github.com/user-attachments/assets/d9d1375b-428e-4d0d-96bb-1cd94ba6153b" />
